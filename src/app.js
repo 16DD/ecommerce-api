@@ -9,6 +9,8 @@ app.use(morgan("dev")); // combined || tiny ...
 app.use(helmet());
 app.use(compression());
 //-- Init db
+require("./dbs/init.mongodb");
+
 //-- Init routes
 
 app.get("/", (req, res) => {
@@ -16,4 +18,5 @@ app.get("/", (req, res) => {
     message: "Error".repeat(10000),
   });
 });
+
 module.exports = app;

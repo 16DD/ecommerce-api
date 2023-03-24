@@ -1,7 +1,7 @@
 const app = require("./src/app");
-require("dotenv").config();
-
-const port = process.env.PORT;
+const {
+  app: { port },
+} = require("./src/configs/config.mongodb");
 
 const server = app.listen(port, () => {
   console.log(`Server start with port ${port}`);
