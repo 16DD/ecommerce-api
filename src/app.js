@@ -7,16 +7,13 @@ const app = express();
 //-- Init middlewares
 app.use(morgan("dev")); // combined || tiny ...
 app.use(helmet());
+app.use(express.json());
 app.use(compression());
+
 //-- Init db
 require("./dbs/init.mongodb");
 
 //-- Init routes
-
-app.get("/", (req, res) => {
-  return res.status(500).json({
-    message: "Error".repeat(10000),
-  });
-});
+app.use("/", require("./routes"));
 
 module.exports = app;
