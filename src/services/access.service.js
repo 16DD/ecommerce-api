@@ -1,6 +1,9 @@
 const shopModel = require("../models/shop.model");
 const bcrypt = require("bcrypt");
-const crypto = require("crypto");
+const crypto = require("node:crypto");
+const KeyTokenService = require("./keytoken.service");
+const { createTokenPair } = require("../auth/authUtils");
+const { getInfoData } = require("../utils");
 const RoleShop = {
   SHOP: "10001",
   WRITER: "10002",
@@ -8,7 +11,7 @@ const RoleShop = {
   ADMIN: "10004",
 };
 class AccessService {
-  static signUp = async (name, email, password) => {
+  static signUp = async ({ name, email, password }) => {
     try {
       //--check email
       const holderShop = await shopModel.findOne({ email }).lean();
@@ -29,11 +32,41 @@ class AccessService {
       });
       //--create key
       if (newShop) {
-        const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
-          modulusLength: 4096,
+        const privateKey = crypto.randomBytes(64).toString("hex");
+        const publicKey = crypto.randomBytes(64).toString("hex");
+
+        //--create keystore
+        const keyStore = await KeyTokenService.createKeyToken({
+          userId: newShop._id,
+          privateKey,
+          publicKey,
         });
-        console.log({ publicKey, privateKey });
-        return { publicKey, privateKey };
+
+        if (!keyStore) {
+          return {
+            message: "Create key store error",
+            status: "error",
+          };
+        }
+
+        //--jwt create token
+        const tokens = createTokenPair(
+          {
+            userId: newShop._id,
+            email,
+          },
+          publicKey,
+          privateKey
+        );
+
+        return {
+          code: "success",
+          metadata: getInfoData({
+            fileds: ["_id", "name", "email"],
+            object: newShop,
+          }),
+          tokens,
+        };
       }
     } catch (error) {
       return {
