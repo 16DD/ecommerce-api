@@ -3,6 +3,7 @@
 ###
 POST {{url}}/v1/api/shop/signup HTTP/1.1
 Content-Type: application/json
+x-api-key: f36e90bc2a924558369084cca38cf233b3046bc186217c8f4c0f257b235567e4429b6ac9640a040ab6b397ca7c7e7e19a35d3edc218b9f35fcb938cc4d12262c
 
 {
     "name" : "darius lengend",

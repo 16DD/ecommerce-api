@@ -1,3 +1,4 @@
+//--Authentication API
 const JWT = require("jsonwebtoken");
 
 const createTokenPair = (payload, publicKey, privateKey) => {
