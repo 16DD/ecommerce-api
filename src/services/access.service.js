@@ -39,7 +39,7 @@ class AccessService {
         publicKey,
       });
 
-      if (keyStore) {
+      if (!keyStore) {
         throw new BadRequestError("Error: create keystore");
       }
 
@@ -54,8 +54,7 @@ class AccessService {
       );
 
       return {
-        code: "success",
-        metadata: getInfoData({
+        shop: getInfoData({
           fileds: ["_id", "name", "email"],
           object: newShop,
         }),
