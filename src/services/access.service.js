@@ -1,67 +1,102 @@
-const shopModel = require("../models/shop.model");
 const bcrypt = require("bcrypt");
-const crypto = require("node:crypto");
 const KeyTokenService = require("./keytoken.service");
 const { createTokenPair } = require("../auth/authUtils");
-const { getInfoData } = require("../utils");
-const { BadRequestError } = require("../core/error.respone");
-const RoleShop = {
-  SHOP: "10001",
-  WRITER: "10002",
-  EDITER: "10003",
-  ADMIN: "10004",
-};
+const { getInfoData, createKeyPair } = require("../utils");
+const { BadRequestError, AuthFailureError } = require("../core/error.respone");
+const ShopService = require("./shop.service");
+
 class AccessService {
-  static signUp = async ({ name, email, password }) => {
-    //--check email
-    const holderShop = await shopModel.findOne({ email }).lean();
+    static sigIn = async ({ email, password, refreshToken = null }) => {
+        //--check email
+        const foundShop = await ShopService.findByEmail({ email });
+        if (!foundShop) {
+            throw new AuthFailureError("Shop not registered");
+        }
+        //--check password
+        const match = await bcrypt.compare(password, foundShop.password);
+        if (!match) {
+            throw new AuthFailureError("Authentication error");
+        }
+        //--create key pair
+        const { privateKey, publicKey } = createKeyPair();
+        //--generate token pair
+        const tokens = createTokenPair(
+            {
+                userId: foundShop._id,
+                email
+            },
+            publicKey,
+            privateKey
+        );
 
-    if (holderShop) {
-      throw new BadRequestError("Error: Shop already registered!");
-    }
-    //--create shop
-    const passwordHash = await bcrypt.hash(password, 10);
-    const newShop = await shopModel.create({
-      name,
-      email,
-      password: passwordHash,
-      roles: [RoleShop.SHOP],
-    });
-    //--create key
-    if (newShop) {
-      const privateKey = crypto.randomBytes(64).toString("hex");
-      const publicKey = crypto.randomBytes(64).toString("hex");
+        //create keystore
+        const keyStore = await KeyTokenService.createKeyToken({
+            userId: foundShop._id,
+            publicKey,
+            privateKey,
+            refreshToken: tokens.refreshToken
+        });
+        if (!keyStore) {
+            throw new BadRequestError("Create keystore");
+        }
 
-      //--create keystore
-      const keyStore = await KeyTokenService.createKeyToken({
-        userId: newShop._id,
-        privateKey,
-        publicKey,
-      });
+        return {
+            shop: getInfoData({
+                fileds: ["_id", "name", "email"],
+                object: foundShop
+            }),
+            tokens
+        };
+    };
 
-      if (!keyStore) {
-        throw new BadRequestError("Error: create keystore");
-      }
+    static signUp = async ({ name, email, password }) => {
+        //--check email
+        const holderShop = await ShopService.findByEmail({ email });
 
-      //--jwt create token
-      const tokens = createTokenPair(
-        {
-          userId: newShop._id,
-          email,
-        },
-        publicKey,
-        privateKey
-      );
+        if (holderShop) {
+            throw new BadRequestError("Shop already registered!");
+        }
+        //--create shop
+        const passwordHash = await bcrypt.hash(password, 10);
+        const newShop = await ShopService.create({
+            name,
+            email,
+            password: passwordHash
+        });
+        //--create key
+        if (newShop) {
+            const { privateKey, publicKey } = createKeyPair();
 
-      return {
-        shop: getInfoData({
-          fileds: ["_id", "name", "email"],
-          object: newShop,
-        }),
-        tokens,
-      };
-    }
-  };
+            //--jwt create token
+            const tokens = createTokenPair(
+                {
+                    userId: newShop._id,
+                    email
+                },
+                publicKey,
+                privateKey
+            );
+
+            //create keystore
+            const keyStore = await KeyTokenService.createKeyToken({
+                userId: newShop._id,
+                publicKey,
+                privateKey,
+                refreshToken: tokens.refreshToken
+            });
+            if (!keyStore) {
+                throw new BadRequestError("Create keystore");
+            }
+
+            return {
+                shop: getInfoData({
+                    fileds: ["_id", "name", "email"],
+                    object: newShop
+                }),
+                tokens
+            };
+        }
+    };
 }
 
 module.exports = AccessService;

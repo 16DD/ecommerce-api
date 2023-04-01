@@ -7,7 +7,17 @@ x-api-key: f36e90bc2a924558369084cca38cf233b3046bc186217c8f4c0f257b235567e4429b6
 
 {
     "name" : "darius lengend",
-    "email" :"dariu13@gmail.com",
+    "email" :"darius@gmail.com",
     "password": "1234"
 }
 
+
+###
+POST {{url}}/v1/api/shop/sigin HTTP/1.1
+Content-Type: application/json
+x-api-key: f36e90bc2a924558369084cca38cf233b3046bc186217c8f4c0f257b235567e4429b6ac9640a040ab6b397ca7c7e7e19a35d3edc218b9f35fcb938cc4d12262c
+
+{
+    "email" :"darius@gmail.com",
+    "password": "12345"
+}
