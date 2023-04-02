@@ -19,5 +19,15 @@ x-api-key: f36e90bc2a924558369084cca38cf233b3046bc186217c8f4c0f257b235567e4429b6
 
 {
     "email" :"darius@gmail.com",
-    "password": "12345"
+    "password": "1234"
+}
+
+###
+POST {{url}}/v1/api/shop/logout HTTP/1.1
+Content-Type: application/json
+x-api-key: f36e90bc2a924558369084cca38cf233b3046bc186217c8f4c0f257b235567e4429b6ac9640a040ab6b397ca7c7e7e19a35d3edc218b9f35fcb938cc4d12262c
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDI4ZmIxOWMzZjk4NGY3OTlkMzcwNjAiLCJlbWFpbCI6ImRhcml1c0BnbWFpbC5jb20iLCJpYXQiOjE2ODA0MTAzMzcsImV4cCI6MTY4MDQ5NjczN30.2nr-mBaUyp6Gz-pL9in7xXXoFovpkA-lp10HerQD414
+x-client-id: 6428fb19c3f984f799d37060
+
+{
 }

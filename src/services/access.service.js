@@ -97,6 +97,10 @@ class AccessService {
             };
         }
     };
+
+    static logOut = async (keyStore) => {
+        return await KeyTokenService.removeById(keyStore._id);
+    };
 }
 
 module.exports = AccessService;

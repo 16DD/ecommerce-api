@@ -27,7 +27,7 @@ const keyTokenSchema = new Schema(
         }
     },
     {
-        collation: COLLECTION_NAME,
+        collection: COLLECTION_NAME,
         timestamps: true
     }
 );
