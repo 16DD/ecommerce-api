@@ -6,6 +6,40 @@ const { BadRequestError, AuthFailureError } = require("../core/error.respone");
 const ShopService = require("./shop.service");
 
 class AccessService {
+    static handleRefreshToken = async ({ user, keyStore, refreshToken }) => {
+        const { userId, email } = user;
+        //--check refresh token used
+        if (keyStore.refreshTokenUsed.includes(refreshToken)) {
+            console.log("Token used");
+            await KeyTokenService.removeById(userId);
+            throw new BadRequestError("Something wrong happned !!");
+        }
+        //--compare refresh token
+        if (keyStore.refreshToken !== refreshToken) throw new AuthFailureError("Shop not regisrted");
+        //--check shop
+        const foundShop = await ShopService.findByEmail({ email });
+        if (!foundShop) AuthFailureError("Shop not regiser 1");
+        //--create key pair
+        const { privateKey, publicKey } = createKeyPair();
+        //--generate token pair
+        const tokens = createTokenPair(
+            {
+                userId: foundShop._id,
+                email
+            },
+            publicKey,
+            privateKey
+        );
+
+        //--update key store
+        await KeyTokenService.findAndUpdate({ userId, publicKey, privateKey, refreshToken: tokens.refreshToken, refreshTokenUsed: refreshToken });
+
+        return {
+            user,
+            tokens
+        };
+    };
+
     static sigIn = async ({ email, password, refreshToken = null }) => {
         //--check email
         const foundShop = await ShopService.findByEmail({ email });

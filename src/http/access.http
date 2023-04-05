@@ -13,7 +13,7 @@ x-api-key: f36e90bc2a924558369084cca38cf233b3046bc186217c8f4c0f257b235567e4429b6
 
 
 ###
-POST {{url}}/v1/api/shop/sigin HTTP/1.1
+POST {{url}}/v1/api/shop/signin HTTP/1.1
 Content-Type: application/json
 x-api-key: f36e90bc2a924558369084cca38cf233b3046bc186217c8f4c0f257b235567e4429b6ac9640a040ab6b397ca7c7e7e19a35d3edc218b9f35fcb938cc4d12262c
 
@@ -26,8 +26,14 @@ x-api-key: f36e90bc2a924558369084cca38cf233b3046bc186217c8f4c0f257b235567e4429b6
 POST {{url}}/v1/api/shop/logout HTTP/1.1
 Content-Type: application/json
 x-api-key: f36e90bc2a924558369084cca38cf233b3046bc186217c8f4c0f257b235567e4429b6ac9640a040ab6b397ca7c7e7e19a35d3edc218b9f35fcb938cc4d12262c
-authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDI4ZmIxOWMzZjk4NGY3OTlkMzcwNjAiLCJlbWFpbCI6ImRhcml1c0BnbWFpbC5jb20iLCJpYXQiOjE2ODA0MTAzMzcsImV4cCI6MTY4MDQ5NjczN30.2nr-mBaUyp6Gz-pL9in7xXXoFovpkA-lp10HerQD414
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDI4ZmIxOWMzZjk4NGY3OTlkMzcwNjAiLCJlbWFpbCI6ImRhcml1c0BnbWFpbC5jb20iLCJpYXQiOjE2ODA1NDcxMjYsImV4cCI6MTY4MDYzMzUyNn0.WhPVqkA8LnF_kOHlk6Gg07s4wKK-wrNmd90wyIXlkHo
 x-client-id: 6428fb19c3f984f799d37060
 
-{
-}
+
+###
+POST {{url}}/v1/api/shop/handleRefreshtoken HTTP/1.1
+Content-Type: application/json
+x-api-key: f36e90bc2a924558369084cca38cf233b3046bc186217c8f4c0f257b235567e4429b6ac9640a040ab6b397ca7c7e7e19a35d3edc218b9f35fcb938cc4d12262c
+x-client-id: 6428fb19c3f984f799d37060
+x-rtoken-key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDI4ZmIxOWMzZjk4NGY3OTlkMzcwNjAiLCJlbWFpbCI6ImRhcml1c0BnbWFpbC5jb20iLCJpYXQiOjE2ODA2MTgyODgsImV4cCI6MTY4MDcwNDY4OH0.brKaVBavzCcWbrC9u2dZc4bjXUvmsQnMEnvDlxmLn-8
+

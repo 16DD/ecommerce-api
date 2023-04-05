@@ -7,7 +7,7 @@ class KeyTokenService {
     };
     static createKeyToken = async ({ userId, publicKey, privateKey, refreshToken }) => {
         const filter = { user: userId };
-        const update = { publicKey, privateKey, refreshTokenUsed: [], refreshToken };
+        const update = { publicKey, privateKey, refreshToken };
         const options = { upsert: true, new: true }; // create if not find and return new key.
 
         const tokens = await keyTokenModel.findOneAndUpdate(filter, update, options);
@@ -16,6 +16,22 @@ class KeyTokenService {
 
     static removeById = async (userId) => {
         return await keyTokenModel.deleteOne({ _id: new mongoose.Types.ObjectId(userId) });
+    };
+
+    static findAndUpdate = async ({ userId, publicKey, privateKey, refreshToken, refreshTokenUsed }) => {
+        await keyTokenModel.updateOne(
+            { user: userId },
+            {
+                $set: {
+                    privateKey,
+                    publicKey,
+                    refreshToken: refreshToken
+                },
+                $addToSet: {
+                    refreshTokenUsed: refreshTokenUsed
+                }
+            }
+        );
     };
 }
 module.exports = KeyTokenService;

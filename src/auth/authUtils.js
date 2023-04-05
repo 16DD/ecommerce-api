@@ -5,7 +5,8 @@ const KeyTokenService = require("../services/keytoken.service");
 const HEADER = {
     API_KEY: "x-api-key",
     AUTHORIZATION: "authorization",
-    CLIENT_ID: "x-client-id"
+    CLIENT_ID: "x-client-id",
+    REFRESHTOKEN: "x-rtoken-key"
 };
 
 const createTokenPair = (payload, publicKey, privateKey) => {
@@ -35,7 +36,18 @@ const authentication = async (req, res, next) => {
         throw new NotFoundError("Not found keyStore");
     }
 
-    //-- check accesstoken
+    //check refresh token -> route refresh token
+    const refreshToken = req.headers[HEADER.REFRESHTOKEN];
+    if (refreshToken) {
+        const decodeUser = JWT.verify(refreshToken, keyStore.privateKey);
+        if (userId !== decodeUser.userId) throw new AuthFailureError("Invalid userId");
+        req.keyStore = keyStore;
+        req.user = decodeUser;
+        req.refreshToken = refreshToken;
+        return next();
+    }
+
+    //-- check accesstoken -> route logout
     const accessToken = req.headers[HEADER.AUTHORIZATION];
     if (!accessToken) {
         throw new AuthFailureError("Invalid request");
