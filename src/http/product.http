@@ -1,0 +1,24 @@
+@url = http://localhost:3030
+
+
+###
+POST {{url}}/v1/api/product HTTP/1.1
+Content-Type: application/json
+x-api-key: f36e90bc2a924558369084cca38cf233b3046bc186217c8f4c0f257b235567e4429b6ac9640a040ab6b397ca7c7e7e19a35d3edc218b9f35fcb938cc4d12262c
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDI4ZmIxOWMzZjk4NGY3OTlkMzcwNjAiLCJlbWFpbCI6ImRhcml1c0BnbWFpbC5jb20iLCJpYXQiOjE2ODA4MDMwODIsImV4cCI6MTY4MDg4OTQ4Mn0.yw-IljzBhwZEUW6xuRvrws4AV2hrEyP_MRIrvr2FhQo
+x-client-id: 6428fb19c3f984f799d37060
+x-rtoken-key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDI4ZmIxOWMzZjk4NGY3OTlkMzcwNjAiLCJlbWFpbCI6ImRhcml1c0BnbWFpbC5jb20iLCJpYXQiOjE2ODA4MDM5MDEsImV4cCI6MTY4MDg5MDMwMX0.H_etf_OxvLoPMBx5E-Q1QEEnQsqouT0kMI2VzAFjiGE
+
+{
+    "product_name":"T-sirt",
+    "product_thumb":"http://1111",
+    "product_description":"T sirt white",
+    "product_price":100,
+    "product_quantity":12,
+    "product_type":"Clothing",
+    "product_attributes":{
+        "brand":"Blue Exchange",
+        "size":"L",
+        "material":"Cotton"
+    }
+}
