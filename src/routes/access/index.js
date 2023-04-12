@@ -5,15 +5,15 @@ const { asyncHandle } = require("../../helpers/asyncHandle");
 const { authentication } = require("../../auth/authUtils");
 
 //SignIn
-router.post("/shop/signin", asyncHandle(accessController.signIn));
+router.post("/signin", asyncHandle(accessController.signIn));
 //SignUp
-router.post("/shop/signup", asyncHandle(accessController.signUp));
+router.post("/signup", asyncHandle(accessController.signUp));
 
 //Authentication
 router.use(asyncHandle(authentication));
 //Handle refresh token
-router.post("/shop/handleRefreshToken", asyncHandle(accessController.handleRefrestoken));
+router.post("/handleRefreshToken", asyncHandle(accessController.handleRefrestoken));
 //LogOut
-router.post("/shop/logout", asyncHandle(accessController.logOut));
+router.post("/logout", asyncHandle(accessController.logOut));
 
 module.exports = router;
