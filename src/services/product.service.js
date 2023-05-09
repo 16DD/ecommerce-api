@@ -11,6 +11,7 @@ const {
     updateProductById
 } = require("../models/repositories/product.repo");
 const { removeUndefinedObject, updateNestedObjectParser } = require("../utils");
+const { insertInventory } = require("../models/repositories/inventory.repo");
 
 class ProductFactory {
     static productRegister = {};
@@ -96,7 +97,12 @@ class Product {
     }
     //-- create new product
     async create(product_id) {
-        return await productModel.create({ ...this, _id: product_id });
+        const newProduct = await productModel.create({ ...this, _id: product_id });
+        //-- add product_stock in inventory collecion
+        if (newProduct) {
+            await insertInventory({ productId: newProduct._id, shopId: this.product_shop, stock: this.product_quantity });
+        }
+        return newProduct;
     }
 
     //-- update product
@@ -142,6 +148,24 @@ class Electronics extends Product {
         if (!newProduct) throw new BadRequestError("Create new product error");
         return newProduct;
     }
+
+    async updateProduct(productId) {
+        //-- remove atr has null and undefined
+        const objectParams = removeUndefinedObject(this);
+
+        //-- update product child
+        if (objectParams.product_attributes) {
+            await updateProductById({
+                productId,
+                bodyUpdate: updateNestedObjectParser(removeUndefinedObject(objectParams.product_attributes)),
+                model: electronicModel
+            });
+        }
+        //-- update product father
+        const updateProduct = await super.updateProduct(productId, updateNestedObjectParser(objectParams));
+
+        return updateProduct;
+    }
 }
 
 class Furnitures extends Product {
@@ -151,6 +175,24 @@ class Furnitures extends Product {
         const newProduct = await super.create(newFurniture._id);
         if (!newProduct) throw new BadRequestError("Create new product error");
         return newProduct;
+    }
+
+    async updateProduct(productId) {
+        //-- remove atr has null and undefined
+        const objectParams = removeUndefinedObject(this);
+
+        //-- update product child
+        if (objectParams.product_attributes) {
+            await updateProductById({
+                productId,
+                bodyUpdate: updateNestedObjectParser(removeUndefinedObject(objectParams.product_attributes)),
+                model: furnitureModel
+            });
+        }
+        //-- update product father
+        const updateProduct = await super.updateProduct(productId, updateNestedObjectParser(objectParams));
+
+        return updateProduct;
     }
 }
 
